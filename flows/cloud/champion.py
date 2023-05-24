@@ -22,8 +22,6 @@ class TaxiFarePrediction(FlowSpec):
             df.fare_amount > 0,         # fare_amount in US Dollars
             df.trip_distance <= 100,    # trip_distance in miles
             df.trip_distance > 0,
-            df.tip_amount > 0,
-            df.tolls_amount > 0,
         ]
 
         for f in obviously_bad_data_filters:

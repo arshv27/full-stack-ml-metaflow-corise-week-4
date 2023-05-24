@@ -1,8 +1,6 @@
 from metaflow import FlowSpec, step, card, conda_base, current, Parameter, Flow, trigger, project
 from metaflow.cards import Markdown, Table, Image, Artifact
 
-from xgboost import XGBRegressor
-
 URL = "https://outerbounds-datasets.s3.us-west-2.amazonaws.com/taxi/latest.parquet"
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
@@ -46,13 +44,16 @@ class TaxiFarePrediction(FlowSpec):
         # In practice, you want split time series data in more sophisticated ways and run backtests. 
         self.X = self.df["trip_distance"].values.reshape(-1, 1)
         self.y = self.df["total_amount"].values
-        self.next(self.xgboost_model)
+        self.next(self.linear_model)
 
-    @step    
-    def xgboost_model(self):
-        "Fit an XGBoost model"
-        from xgboost import XGBRegressor
-        self.model = XGBRegressor()
+    @step
+    def linear_model(self):
+        "Fit a single variable, linear model to the data."
+        from sklearn.linear_model import LinearRegression
+
+        # TODO: Play around with the model if you are feeling it.
+        self.model = LinearRegression()
+
         self.next(self.validate)
 
     def gather_sibling_flow_run_results(self):
